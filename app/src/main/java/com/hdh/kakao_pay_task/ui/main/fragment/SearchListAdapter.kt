@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_search.view.*
 
 class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.SearchListHolder>() {
 
-    public var items: ArrayList<SearchVclip.Document> = ArrayList()
+    public var items: ArrayList<SearchCulture> = ArrayList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -30,10 +30,10 @@ class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.SearchListHolde
     override fun getItemCount(): Int = items.size
 
     inner class SearchListHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(item: SearchVclip.Document) {
+        fun bind(item: SearchCulture) {
             with(itemView){
-                Glide.with(this).load(item.thumbnail).into(image_thumbnail)
-                text_title.text = item.title
+                //Glide.with(this).load(item.thumbnail).into(image_thumbnail)
+                //text_title.text = item.addr
             }
 //            when (item) {
 //                is SearchVclip -> bind(item as SearchVclip.Document)

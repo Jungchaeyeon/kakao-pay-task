@@ -48,8 +48,8 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
 
     override fun createPresenter(): MainFragmentPresenter = MainFragmentPresenter(this)
 
-    override fun setList(model: SearchVclip) {
-        searchListAdapter.items = model.documents
+    override fun setList(model: SearchCulture) {
+        searchListAdapter.items = ArrayList()
         searchListAdapter.notifyDataSetChanged()
     }
 }

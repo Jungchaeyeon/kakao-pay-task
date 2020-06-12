@@ -1,5 +1,7 @@
 package com.hdh.kakao_pay_task.ui.main.fragment
 
+import com.hdh.kakao_pay_task.data.model.SearchCulture
+import com.hdh.kakao_pay_task.data.model.SearchMask
 import com.hdh.kakao_pay_task.utils.ApiCallback
 import com.hdh.kakao_pay_task.data.model.SearchVclip
 import com.hdh.kakao_pay_task.ui.base.BasePresenter
@@ -28,9 +30,9 @@ class MainFragmentPresenter(): BasePresenter<MainFragmentView>(){
             mView?.showToast("검색어를 입력하세요.")
         }
 
-        addSubscription(apiStores?.vclipRequest(query=query, page=1),
-            object : ApiCallback<SearchVclip>() {
-                override fun onSuccess(model: SearchVclip) {
+        addSubscription(apiStores?.tourRequest(title=query),
+            object : ApiCallback<SearchCulture>() {
+                override fun onSuccess(model: SearchCulture) {
                     mView?.setList(model)
                 }
 
