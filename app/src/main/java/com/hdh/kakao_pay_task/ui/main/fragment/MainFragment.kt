@@ -25,17 +25,9 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setStatusBarResID(R.color.colorAccent)
+
         recycler_search_result.adapter = searchListAdapter
 
-        mPresenter?.let { mPresenter ->
-            addSubscription(
-                mPresenter.doSearch
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        //recycler_search_result.adapter = searchListAdapter
-                    }
-            )
-        }
         setOnClickListener()
     }
 
@@ -48,8 +40,8 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
 
     override fun createPresenter(): MainFragmentPresenter = MainFragmentPresenter(this)
 
-    override fun setList(model: SearchVclip) {
-        searchListAdapter.items = model.documents
+    override fun setList(model: SearchCulture) {
+        searchListAdapter.items = model.response.body.items.itemList
         searchListAdapter.notifyDataSetChanged()
     }
 }

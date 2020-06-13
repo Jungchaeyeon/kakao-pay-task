@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiClient {
     private lateinit var mRetrofit: Retrofit
-    private val baseUrl = "https://dapi.kakao.com/"
+    private val baseUrl = "http://api.visitkorea.or.kr/openapi/service/rest/"
 
     fun retrofit(baseUrl: String = this.baseUrl): Retrofit? {
         val builder = OkHttpClient.Builder()
@@ -31,10 +31,6 @@ class ApiClient {
                 builder
                     .addInterceptor { chain ->
                         val requestBuilder = chain.request().newBuilder()
-                        requestBuilder.addHeader(
-                            "Authorization",
-                            "KakaoAK 2335c059e76b35744a56e47d9c299db2"
-                        )
                         chain.proceed(requestBuilder.build())
                     }
                     .build())

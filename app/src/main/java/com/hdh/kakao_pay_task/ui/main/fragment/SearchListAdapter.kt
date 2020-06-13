@@ -5,13 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.hdh.kakao_pay_task.R
-import com.hdh.kakao_pay_task.data.model.*
+import com.hdh.kakao_pay_task.data.model.SearchCulture
 import kotlinx.android.synthetic.main.item_search.view.*
 
 class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.SearchListHolder>() {
 
-    public var items: ArrayList<SearchVclip.Document> = ArrayList()
+    var items: ArrayList<SearchCulture.Item> = ArrayList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -30,41 +31,13 @@ class SearchListAdapter : RecyclerView.Adapter<SearchListAdapter.SearchListHolde
     override fun getItemCount(): Int = items.size
 
     inner class SearchListHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(item: SearchVclip.Document) {
-            with(itemView){
-                Glide.with(this).load(item.thumbnail).into(image_thumbnail)
-                text_title.text = item.title
+        fun bind(item: SearchCulture.Item) {
+            with(itemView) {
+                Glide.with(this).load(item.galWebImageUrl)
+                    .override(500)
+                    .signature(ObjectKey(item.galWebImageUrl)).into(image_thumbnail)
+                text_title.text = item.galTitle
             }
-//            when (item) {
-//                is SearchVclip -> bind(item as SearchVclip.Document)
-//                is SearchImage -> bind(item as SearchImage.Document)
-//                is SearchBlog -> bind(item as SearchBlog.Document)
-//                is SearchBook -> bind(item as SearchBook.Document)
-//                is SearchCafe -> bind(item as SearchCafe.Document)
-//            }
-        }
-
-//        private fun bind(item: SearchVclip.Document) {
-//            with(itemView){
-//                Glide.with(this).load(item.thumbnail).into(image_thumbnail)
-//                text_title.text = item.title
-//            }
-//        }
-
-        private fun bind(item: SearchImage.Document) {
-
-        }
-
-        private fun bind(item: SearchBlog.Document) {
-
-        }
-
-        private fun bind(item: SearchBook.Document) {
-
-        }
-
-        private fun bind(item: SearchCafe.Document) {
-
         }
     }
 }
