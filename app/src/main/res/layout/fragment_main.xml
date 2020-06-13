@@ -108,7 +108,7 @@
             android:scrollbars="none"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
-            tools:listitem="@layout/item_top" />
+            tools:listitem="@layout/item_search_grid" />
 
 
         <com.airbnb.lottie.LottieAnimationView

@@ -1,14 +1,15 @@
 package com.hdh.kakao_pay_task.ui.main.fragment
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
-import kotlinx.android.synthetic.main.item_top.view.*
+import kotlinx.android.synthetic.main.item_search_grid.view.*
 
-class SearchGridAdapter : RecyclerView.Adapter<SearchGridAdapter.SearchListHolder>() {
+class SearchGridAdapter(private val callback : MainFragment.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchGridAdapter.SearchListHolder>() {
 
     private var prevSize = 0
 
@@ -29,7 +30,7 @@ class SearchGridAdapter : RecyclerView.Adapter<SearchGridAdapter.SearchListHolde
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchListHolder =
         SearchListHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_top, parent, false)
+                .inflate(R.layout.item_search_grid, parent, false)
         )
 
     override fun onBindViewHolder(holder: SearchListHolder, position: Int) {
@@ -47,6 +48,10 @@ class SearchGridAdapter : RecyclerView.Adapter<SearchGridAdapter.SearchListHolde
                 text_view_count.text = item.galViewCount()
                 text_tag.text = item.galSearchKeyword(2,2)
                 view_void.visibility = getVisibility(bindingAdapterPosition)
+                
+                this.setOnClickListener {
+                    callback.run(item)
+                }
             }
         }
 

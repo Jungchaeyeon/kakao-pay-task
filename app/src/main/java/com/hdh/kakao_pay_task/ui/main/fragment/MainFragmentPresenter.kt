@@ -18,11 +18,11 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
 
     fun loadItems(keyword: String) {
         mView?.showLoading()
-        if (keyword.isEmpty()) {
-            mView?.showToast("검색어를 입력하세요.")
+        currentKeyword = if (keyword.isEmpty()) {
+            " "
+        }else {
+            keyword
         }
-        currentKeyword = keyword
-
         addSubscription(apiStores?.tourRequest(keyword = currentKeyword),
             object : ApiCallback<GallerySearchList>() {
                 override fun onSuccess(model: GallerySearchList) {
@@ -58,7 +58,6 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
                 }
 
                 override fun onFailure(msg: String?) {
-                    mView?.showToast("마지막 페이지 입니다.")
                     isEnd = true
                     mView?.hideListLoading()
                 }

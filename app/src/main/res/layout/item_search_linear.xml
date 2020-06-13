@@ -110,6 +110,7 @@
     <View
         android:id="@+id/view_void"
         android:layout_width="match_parent"
-        android:layout_height="24dp"/>
+        android:layout_height="24dp"
+        android:visibility="gone"/>
 
 </LinearLayout>

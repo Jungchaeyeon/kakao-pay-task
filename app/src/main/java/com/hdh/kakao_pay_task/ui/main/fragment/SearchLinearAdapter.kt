@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
-import kotlinx.android.synthetic.main.item_search.view.*
+import kotlinx.android.synthetic.main.item_search_linear.view.*
 
-class SearchLinearAdapter : RecyclerView.Adapter<SearchLinearAdapter.SearchListHolder>() {
+class SearchLinearAdapter(private val callback : MainFragment.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchLinearAdapter.SearchListHolder>() {
 
     private var prevSize = 0
 
@@ -29,7 +29,7 @@ class SearchLinearAdapter : RecyclerView.Adapter<SearchLinearAdapter.SearchListH
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchListHolder =
         SearchListHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_search, parent, false)
+                .inflate(R.layout.item_search_linear, parent, false)
         )
 
     override fun onBindViewHolder(holder: SearchListHolder, position: Int) {
@@ -47,6 +47,10 @@ class SearchLinearAdapter : RecyclerView.Adapter<SearchLinearAdapter.SearchListH
                 text_photographer.text = item.galPhotographer()
                 text_view_count.text = item.galViewCount()
                 view_void.visibility = getVisibility(bindingAdapterPosition)
+
+                this.setOnClickListener {
+                    callback.run(item)
+                }
             }
         }
 

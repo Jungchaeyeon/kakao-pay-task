@@ -13,11 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
 import com.hdh.kakao_pay_task.ui.base.mvp.MvpFragment
+import com.hdh.kakao_pay_task.ui.detail.DetailFragment
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.lottie_loading
 import kotlinx.android.synthetic.main.fragment_main.recycler_search_result
 
 class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
+
+    interface Callback<T>{
+        fun  run(t : T)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,11 +32,11 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
     ) = super.setContentView(inflater, R.layout.fragment_main)
 
     private val searchGridAdapter by lazy {
-        SearchGridAdapter()
+        SearchGridAdapter(callback)
     }
 
     private val searchLinearAdapter by lazy {
-        SearchLinearAdapter()
+        SearchLinearAdapter(callback)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,6 +51,12 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(1)) {
                     mPresenter?.loadMoreItems()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                when(newState){
+                    RecyclerView.SCROLL_STATE_DRAGGING->hideKeyboard()
                 }
             }
         })
@@ -110,5 +122,11 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
     override fun notifyList() {
         searchGridAdapter.notifyList()
         searchLinearAdapter.notifyList()
+    }
+
+    private val callback = object : Callback<GallerySearchList.Item>{
+        override fun run(item: GallerySearchList.Item) {
+            pushUpFragment(DetailFragment(item))
+        }
     }
 }
