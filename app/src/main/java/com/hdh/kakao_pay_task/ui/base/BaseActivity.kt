@@ -16,6 +16,7 @@ import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.utils.ApiClient
 import com.hdh.kakao_pay_task.data.api.ApiStores
 import com.hdh.kakao_pay_task.utils.ColorUtil
+import com.hdh.kakao_pay_task.utils.DPIUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -29,16 +30,17 @@ import kotlin.collections.ArrayList
 abstract class BaseActivity : AppCompatActivity() {
 
     protected val compositeDisposable = CompositeDisposable()
-    public var fragmentList: ArrayList<BaseFragment> = ArrayList()
+    var fragmentList: ArrayList<BaseFragment> = ArrayList()
     private var calls: ArrayList<Call<*>> = ArrayList()
     private var doubleBackToExitPressedOnce = false
     private var isBacking = false
     private var statusBarHexColor = 0
     val loadingState = PublishSubject.create<Boolean>()
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+        DPIUtil.init(this)
     }
 
     fun setFragmentStatusBarColor(colorID: Int) {
@@ -47,7 +49,7 @@ abstract class BaseActivity : AppCompatActivity() {
         statusBarAnimation(ContextCompat.getColor(application, colorID))
     }
 
-    fun statusBarAnimation(statusBarColor: Int) {
+    private fun statusBarAnimation(statusBarColor: Int) {
         val vaStatusBar = ValueAnimator.ofFloat(0f, 1.0f)
         vaStatusBar.addUpdateListener { valueAnimator ->
             val ratio = valueAnimator.animatedValue as Float
@@ -98,7 +100,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }, 600)
     }
 
-    open fun removeAllFragment() {
+    fun removeAllFragment() {
         val currentFragment = fragmentList.size - 1
         while (fragmentList.size > 0) {
             if (currentFragment == fragmentList.size - 1) {

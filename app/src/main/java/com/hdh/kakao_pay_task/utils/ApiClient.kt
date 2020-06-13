@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiClient {
     private lateinit var mRetrofit: Retrofit
-    private val baseUrl = "http://api.visitkorea.or.kr/openapi/service/rest/"
+    private val baseUrl = "http://api.visitkorea.or.kr/"
 
     fun retrofit(baseUrl: String = this.baseUrl): Retrofit? {
         val builder = OkHttpClient.Builder()
