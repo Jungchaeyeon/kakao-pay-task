@@ -169,7 +169,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
         val manager = supportFragmentManager
         val transaction = manager.beginTransaction()
-        if (isAnim) transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+        if (isAnim) transaction.setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out)
         transaction.remove(fragment)
         transaction.commitAllowingStateLoss()
     }
