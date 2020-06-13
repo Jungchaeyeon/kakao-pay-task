@@ -1,15 +1,21 @@
 package com.hdh.kakao_pay_task.ui.main.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hdh.kakao_pay_task.R
-import com.hdh.kakao_pay_task.data.model.SearchCulture
+import com.hdh.kakao_pay_task.data.model.GallerySearchList
 import com.hdh.kakao_pay_task.ui.base.mvp.MvpFragment
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.fragment_main.lottie_loading
+import kotlinx.android.synthetic.main.fragment_main.recycler_search_result
 
 class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
 
@@ -19,28 +25,34 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
         savedInstanceState: Bundle?
     ) = super.setContentView(inflater, R.layout.fragment_main)
 
-    private val searchListAdapter by lazy {
-        SearchListAdapter()
+    private val searchGridAdapter by lazy {
+        SearchGridAdapter()
+    }
+
+    private val searchLinearAdapter by lazy {
+        SearchLinearAdapter()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setStatusBarResID(R.color.colorAccent)
+        setStatusBarResID(R.color.colorStatusBar)
 
-        recycler_search_result.adapter = searchListAdapter
-        recycler_search_result.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        recycler_search_result.adapter = searchGridAdapter
+
+
+        recycler_search_result.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (!recyclerView.canScrollVertically(1)){
-                    //Log.e("최하단" , "로드 ")
+                if (!recyclerView.canScrollVertically(1)) {
                     mPresenter?.loadMoreItems()
                 }
             }
         })
+        mPresenter?.loadItems(" ")
 
         edit_search.setOnEditorActionListener { v, actionId, event ->
-            when(actionId){
-                EditorInfo.IME_ACTION_SEARCH->button_search.performClick()
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> button_search.performClick()
             }
             true
         }
@@ -52,26 +64,51 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
         button_search.setOnClickListener {
             mPresenter?.loadItems(edit_search.text.toString())
         }
+
+        image_list.setOnClickListener {
+            if (recycler_search_result.adapter is SearchGridAdapter) {
+                recycler_search_result.layoutManager = LinearLayoutManager(context)
+                recycler_search_result.adapter = searchLinearAdapter
+                image_grid.setColorFilter(Color.parseColor("#222222"))
+                image_list.setColorFilter(Color.parseColor("#ffcb03"))
+            }
+        }
+
+
+        image_grid.setOnClickListener {
+            if (recycler_search_result.adapter is SearchLinearAdapter) {
+                recycler_search_result.layoutManager = GridLayoutManager(context, 2)
+                recycler_search_result.adapter = searchGridAdapter
+                image_grid.setColorFilter(Color.parseColor("#ffcb03"))
+                image_list.setColorFilter(Color.parseColor("#222222"))
+            }
+        }
     }
 
     override fun createPresenter(): MainFragmentPresenter = MainFragmentPresenter(this)
 
     override fun showListLoading() {
-        lottie_loading.visibility =View.VISIBLE
+        lottie_loading.visibility = View.VISIBLE
         lottie_loading.playAnimation()
     }
 
     override fun hideListLoading() {
-        lottie_loading.visibility =View.GONE
+        lottie_loading.visibility = View.GONE
         lottie_loading.cancelAnimation()
     }
 
-    override fun setList(model: SearchCulture) {
-        searchListAdapter.items = model.response.body.items.itemList
-        searchListAdapter.notifyDataSetChanged()
+    override fun setList(model: ArrayList<GallerySearchList.Item>) {
+        searchGridAdapter.items = model
+        searchLinearAdapter.items = model
     }
 
-    override fun addList(model: SearchCulture) {
-        searchListAdapter.addItems(model.response.body.items.itemList)
+    override fun savePrevSize() {
+        searchGridAdapter.savePrevSize()
+        searchLinearAdapter.savePrevSize()
+    }
+
+    override fun notifyList() {
+        searchGridAdapter.notifyList()
+        searchLinearAdapter.notifyList()
     }
 }

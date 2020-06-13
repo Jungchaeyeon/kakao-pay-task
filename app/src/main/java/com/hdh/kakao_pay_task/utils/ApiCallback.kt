@@ -1,6 +1,7 @@
 package com.hdh.kakao_pay_task.utils
 
 import com.facebook.stetho.common.LogUtil
+import com.google.gson.JsonSyntaxException
 import com.hdh.kakao_pay_task.ui.base.BaseActivity
 import io.reactivex.observers.DisposableObserver
 import retrofit2.HttpException
@@ -28,17 +29,24 @@ abstract class ApiCallback<M>() :
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
-        if (e is HttpException) {
-            //httpException.response().errorBody().string()
-            val code = e.code()
-            var msg = e.message
-            LogUtil.d("code=$code")
-            if (code == 502 || code == 404 || code == 504) {
-                msg = "통신 상태가 원활하지 않습니다 잠시 후 다시 시도해 주세요."
+        when (e) {
+            is HttpException -> {
+                //httpException.response().errorBody().string()
+                val code = e.code()
+                var msg = e.message
+                LogUtil.d("code=$code")
+                if (code == 502 || code == 404 || code == 504) {
+                    msg = "통신 상태가 원활하지 않습니다 잠시 후 다시 시도해 주세요."
+                }
+                onFailure(msg)
             }
-            onFailure(msg)
-        } else {
-            onFailure(e.message)
+            //검색 결과가 없을 시 items의 타입이 Array 타입에서 Object로 변경 됨
+            is JsonSyntaxException -> {
+                onFailure("검색 결과가 없습니다.")
+            }
+            else -> {
+                onFailure(e.message)
+            }
         }
     }
 

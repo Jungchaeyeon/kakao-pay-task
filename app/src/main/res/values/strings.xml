@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">kakao-pay-task</string>
+    <string name="photographer">포토그래퍼 : %s</string>
+    <string name="photography_location">위치 : %s</string>
+    <string name="modified_time">업데이트 날짜 : %s년 %s월 %s일</string>
+    <string name="view_count">조회수 : %d</string>
 </resources>

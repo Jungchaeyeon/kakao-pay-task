@@ -3,9 +3,9 @@
 
     <item android:drawable="@color/colorPrimary" />
 
-<!--    <item>-->
-<!--        <bitmap android:src="@android:drawable/btn_star"-->
-<!--            android:gravity="center" />-->
-<!--    </item>-->
+    <item>
+        <bitmap android:src="@drawable/img_kakaopay_logo"
+            android:gravity="center" />
+    </item>
 
 </layer-list>
