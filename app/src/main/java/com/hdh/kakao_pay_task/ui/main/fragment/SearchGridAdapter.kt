@@ -1,15 +1,15 @@
 package com.hdh.kakao_pay_task.ui.main.fragment
 
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
+import com.hdh.kakao_pay_task.utils.Delegate
 import kotlinx.android.synthetic.main.item_search_grid.view.*
 
-class SearchGridAdapter(private val callback : MainFragment.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchGridAdapter.SearchListHolder>() {
+class SearchGridAdapter(private val callback : Delegate.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchGridAdapter.SearchListHolder>() {
 
     private var prevSize = 0
 

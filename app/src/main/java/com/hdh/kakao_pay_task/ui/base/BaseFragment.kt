@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.hdh.kakao_pay_task.utils.ApiClient
 import com.hdh.kakao_pay_task.data.api.ApiStores
-import com.hdh.kakao_pay_task.utils.BusProvider
+import com.hdh.kakao_pay_task.utils.ClickUtil
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import java.util.*
@@ -17,10 +17,11 @@ abstract class BaseFragment : Fragment(), BaseView {
     private var mView: View? = null
     override var mContext: Context? = null
     override var mActivity: BaseActivity? = null
-    protected val compositeDisposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
     private var statusBarHexColor = 0
     private var statusBarResID = 0
-    protected var isCloseType: Boolean = false
+    private var isCloseType: Boolean = false
+    val click by lazy { ClickUtil(this.lifecycle) }
 
     fun getBaseActivity(): BaseActivity {
         return activity as BaseActivity
@@ -39,8 +40,6 @@ abstract class BaseFragment : Fragment(), BaseView {
             fragmentList[fragmentList.size - 1].mView?.isClickable = false
         }
         getBaseActivity().fragmentList.add(this)
-
-        BusProvider.register(this)
     }
 
     fun setContentView(inflater: LayoutInflater, resId: Int): View {
@@ -138,13 +137,11 @@ abstract class BaseFragment : Fragment(), BaseView {
     }
 
     override fun onDestroy() {
-        BusProvider.unregister(this)
         super.onDestroy()
 
         getBaseActivity().fragmentList.remove(this)
         getBaseActivity().window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         onUnsubscribe()
-
     }
 
     open fun onUnsubscribe() {

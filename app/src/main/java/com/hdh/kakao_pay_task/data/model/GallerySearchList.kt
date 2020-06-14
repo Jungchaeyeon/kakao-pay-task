@@ -14,7 +14,6 @@ import com.bumptech.glide.request.target.ViewTarget
 import com.google.gson.annotations.SerializedName
 import com.hdh.kakao_pay_task.utils.AnimationUtil
 import com.hdh.kakao_pay_task.utils.DPIUtil
-import kotlinx.android.synthetic.main.item_search_grid.view.*
 import java.text.DecimalFormat
 
 data class GallerySearchList(

@@ -1,6 +1,5 @@
 package com.hdh.kakao_pay_task.ui.base
 
-import android.app.Activity
 import android.content.Context
 
 interface BaseView {

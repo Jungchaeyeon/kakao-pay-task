@@ -31,7 +31,6 @@ abstract class ApiCallback<M>() :
         e.printStackTrace()
         when (e) {
             is HttpException -> {
-                //httpException.response().errorBody().string()
                 val code = e.code()
                 var msg = e.message
                 LogUtil.d("code=$code")

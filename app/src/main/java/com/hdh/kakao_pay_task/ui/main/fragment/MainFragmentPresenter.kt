@@ -7,36 +7,34 @@ import com.hdh.kakao_pay_task.ui.base.BasePresenter
 
 class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
 
-    private var currentKeyword : String = ""
-    private var currentPage : Int = 0
-    private var isEnd : Boolean = false
-    private var gallerySearchList : ArrayList<GallerySearchList.Item> = ArrayList()
+    private var currentKeyword: String = ""
+    private var currentPage: Int = 0
+    private var isEnd: Boolean = false
+    private var gallerySearchList: ArrayList<GallerySearchList.Item> = ArrayList()
 
     constructor(view: MainFragmentView) : this() {
         onAttach(view)
     }
 
     fun loadItems(keyword: String) {
-        mView?.showLoading()
         currentKeyword = if (keyword.isEmpty()) {
             " "
-        }else {
+        } else {
             keyword
         }
+
         addSubscription(apiStores?.tourRequest(keyword = currentKeyword),
-            object : ApiCallback<GallerySearchList>() {
+            object : ApiCallback<GallerySearchList>(mView?.mActivity, true) {
                 override fun onSuccess(model: GallerySearchList) {
                     gallerySearchList = model.response.body.items.itemList
                     mView?.setList(gallerySearchList)
                     mView?.hideKeyboard()
                     currentPage++
                     isEnd = false
-                    mView?.hideLoading()
                 }
 
                 override fun onFailure(msg: String?) {
                     mView?.showToast(msg)
-                    mView?.hideLoading()
                 }
             })
     }

@@ -15,7 +15,7 @@ open class BasePresenter<V> {
     protected var mView: V? = null
     protected var apiStores: ApiStores? = null
 
-    val compositeDisposable: CompositeDisposable by lazy {
+    private val compositeDisposable: CompositeDisposable by lazy {
         CompositeDisposable()
     }
 

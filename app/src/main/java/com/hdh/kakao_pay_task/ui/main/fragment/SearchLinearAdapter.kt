@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
+import com.hdh.kakao_pay_task.utils.Delegate
 import kotlinx.android.synthetic.main.item_search_linear.view.*
 
-class SearchLinearAdapter(private val callback : MainFragment.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchLinearAdapter.SearchListHolder>() {
+class SearchLinearAdapter(
+    private val callback : Delegate.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchLinearAdapter.SearchListHolder>() {
 
     private var prevSize = 0
 

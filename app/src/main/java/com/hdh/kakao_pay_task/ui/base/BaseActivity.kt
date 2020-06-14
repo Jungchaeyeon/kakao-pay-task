@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.os.PersistableBundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
@@ -13,8 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.facebook.stetho.common.LogUtil
 import com.hdh.kakao_pay_task.R
-import com.hdh.kakao_pay_task.utils.ApiClient
 import com.hdh.kakao_pay_task.data.api.ApiStores
+import com.hdh.kakao_pay_task.utils.ApiClient
+import com.hdh.kakao_pay_task.utils.ClickUtil
 import com.hdh.kakao_pay_task.utils.ColorUtil
 import com.hdh.kakao_pay_task.utils.DPIUtil
 import io.reactivex.Observable
@@ -24,14 +24,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import retrofit2.Call
-import kotlin.collections.ArrayList
 
 abstract class BaseActivity : AppCompatActivity() {
 
     protected val compositeDisposable = CompositeDisposable()
     var fragmentList: ArrayList<BaseFragment> = ArrayList()
-    private var calls: ArrayList<Call<*>> = ArrayList()
     private var doubleBackToExitPressedOnce = false
     private var isBacking = false
     private var statusBarHexColor = 0

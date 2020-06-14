@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,16 +13,10 @@ import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
 import com.hdh.kakao_pay_task.ui.base.mvp.MvpFragment
 import com.hdh.kakao_pay_task.ui.detail.DetailFragment
-import io.reactivex.subjects.PublishSubject
+import com.hdh.kakao_pay_task.utils.Delegate
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.fragment_main.lottie_loading
-import kotlinx.android.synthetic.main.fragment_main.recycler_search_result
 
 class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
-
-    interface Callback<T>{
-        fun  run(t : T)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +38,6 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
 
         recycler_search_result.adapter = searchGridAdapter
 
-
         recycler_search_result.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -55,12 +47,13 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                when(newState){
-                    RecyclerView.SCROLL_STATE_DRAGGING->hideKeyboard()
+                when (newState) {
+                    RecyclerView.SCROLL_STATE_DRAGGING -> hideKeyboard()
                 }
             }
         })
-        mPresenter?.loadItems(" ")
+
+        mPresenter?.loadItems("")
 
         edit_search.setOnEditorActionListener { v, actionId, event ->
             when (actionId) {
@@ -74,7 +67,9 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
 
     private fun setOnClickListener() {
         button_search.setOnClickListener {
-            mPresenter?.loadItems(edit_search.text.toString())
+            click.run {
+                mPresenter?.loadItems(edit_search.text.toString())
+            }
         }
 
         image_list.setOnClickListener {
@@ -124,9 +119,11 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
         searchLinearAdapter.notifyList()
     }
 
-    private val callback = object : Callback<GallerySearchList.Item>{
+    private val callback = object : Delegate.Callback<GallerySearchList.Item> {
         override fun run(item: GallerySearchList.Item) {
-            pushUpFragment(DetailFragment(item))
+            click.run {
+                pushUpFragment(DetailFragment(item))
+            }
         }
     }
 }
