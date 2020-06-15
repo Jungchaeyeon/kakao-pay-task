@@ -37,6 +37,7 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
         setStatusBarResID(R.color.colorStatusBar)
 
         recycler_search_result.adapter = searchGridAdapter
+        mPresenter?.loadItems("")
 
         recycler_search_result.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -52,8 +53,6 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
                 }
             }
         })
-
-        mPresenter?.loadItems("")
 
         edit_search.setOnEditorActionListener { v, actionId, event ->
             when (actionId) {
@@ -80,7 +79,6 @@ class MainFragment : MvpFragment<MainFragmentPresenter>(), MainFragmentView {
                 image_list.setColorFilter(Color.parseColor("#ffcb03"))
             }
         }
-
 
         image_grid.setOnClickListener {
             if (recycler_search_result.adapter is SearchLinearAdapter) {

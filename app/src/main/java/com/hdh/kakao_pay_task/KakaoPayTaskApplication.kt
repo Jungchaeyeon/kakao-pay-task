@@ -6,13 +6,11 @@ import com.facebook.stetho.Stetho
 
 class KakaoPayTaskApplication : Application() {
 
-
     override fun onCreate() {
         super.onCreate()
 
         if (BuildConfig.DEBUG){
             Stetho.initializeWithDefaults(this)
         }
-
     }
 }

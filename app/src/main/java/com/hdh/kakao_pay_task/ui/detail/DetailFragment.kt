@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
 import com.hdh.kakao_pay_task.ui.base.BaseFragment
+import com.hdh.kakao_pay_task.utils.ImageUtil
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.item_search_linear.*
 
@@ -21,7 +22,7 @@ class DetailFragment(private val item: GallerySearchList.Item) : BaseFragment() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        item.getImage(image_thumbnail)
+        ImageUtil.getImage(imageView=image_thumbnail , imageUrl=item.galWebImageUrl)
         text_main_title.text = item.galTitle
         text_title.text = item.galTitle
         text_tag.text = item.galSearchKeyword(4, 4)
@@ -33,7 +34,9 @@ class DetailFragment(private val item: GallerySearchList.Item) : BaseFragment() 
 
     private fun setOnClickListener() {
         image_close.setOnClickListener {
-            popFragment()
+            click.run {
+                popFragment()
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hdh.kakao_pay_task.R
 import com.hdh.kakao_pay_task.data.model.GallerySearchList
 import com.hdh.kakao_pay_task.utils.Delegate
+import com.hdh.kakao_pay_task.utils.ImageUtil
 import kotlinx.android.synthetic.main.item_search_grid.view.*
 
 class SearchGridAdapter(private val callback : Delegate.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchGridAdapter.SearchListHolder>() {
@@ -42,7 +43,7 @@ class SearchGridAdapter(private val callback : Delegate.Callback<GallerySearchLi
     inner class SearchListHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(item: GallerySearchList.Item) {
             with(itemView) {
-                item.getImage(image_thumbnail)
+                ImageUtil.getImage(imageView=image_thumbnail , imageUrl=item.galWebImageUrl)
                 text_title.text = item.galTitle
                 text_photographer.text = item.galPhotographer()
                 text_view_count.text = item.galViewCount()
