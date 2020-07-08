@@ -13,15 +13,18 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import java.util.*
 
-abstract class BaseFragment : Fragment(), BaseView {
-    private var mView: View? = null
+open class BaseFragment : Fragment(), BaseView {
+
     override var mContext: Context? = null
     override var mActivity: BaseActivity? = null
+
+    private var mView: View? = null
     private val compositeDisposable = CompositeDisposable()
     private var statusBarHexColor = 0
     private var statusBarResID = 0
     private var isCloseType: Boolean = false
-    val click by lazy { ClickUtil(this.lifecycle) }
+
+    protected lateinit var click: ClickUtil
 
     fun getBaseActivity(): BaseActivity {
         return activity as BaseActivity
@@ -40,6 +43,8 @@ abstract class BaseFragment : Fragment(), BaseView {
             fragmentList[fragmentList.size - 1].mView?.isClickable = false
         }
         getBaseActivity().fragmentList.add(this)
+
+        click = getBaseActivity().click
     }
 
     fun setContentView(inflater: LayoutInflater, resId: Int): View {
@@ -88,10 +93,6 @@ abstract class BaseFragment : Fragment(), BaseView {
         getBaseActivity().popBackStack(fragment, false)
     }
 
-    open fun apiStores(): ApiStores? {
-        return ApiClient().retrofit()?.create(ApiStores::class.java)
-    }
-
     override fun onReturn() {
         this.mView?.isClickable = true
 
@@ -124,14 +125,6 @@ abstract class BaseFragment : Fragment(), BaseView {
         }
     }
 
-    override fun showLoading() {
-        getBaseActivity().loadingState.onNext(true)
-    }
-
-    override fun hideLoading() {
-        getBaseActivity().loadingState.onNext(false)
-    }
-
     override fun hideKeyboard() {
         getBaseActivity().hideKeyboard()
     }
@@ -140,7 +133,6 @@ abstract class BaseFragment : Fragment(), BaseView {
         super.onDestroy()
 
         getBaseActivity().fragmentList.remove(this)
-        getBaseActivity().window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         onUnsubscribe()
     }
 

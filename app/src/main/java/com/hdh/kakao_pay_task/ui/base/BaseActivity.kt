@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.facebook.stetho.common.LogUtil
 import com.hdh.kakao_pay_task.R
-import com.hdh.kakao_pay_task.data.api.ApiStores
-import com.hdh.kakao_pay_task.utils.ApiClient
 import com.hdh.kakao_pay_task.utils.ClickUtil
 import com.hdh.kakao_pay_task.utils.ColorUtil
 import com.hdh.kakao_pay_task.utils.DPIUtil
@@ -25,14 +23,13 @@ import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
-abstract class BaseActivity : AppCompatActivity() {
+open class BaseActivity : AppCompatActivity() {
 
-    protected val compositeDisposable = CompositeDisposable()
-    var fragmentList: ArrayList<BaseFragment> = ArrayList()
+    private val compositeDisposable = CompositeDisposable()
     private var doubleBackToExitPressedOnce = false
-    private var isBacking = false
     private var statusBarHexColor = 0
-    val loadingState = PublishSubject.create<Boolean>()
+    var fragmentList: ArrayList<BaseFragment> = ArrayList()
+    val click by lazy { ClickUtil(this.lifecycle) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,18 +55,15 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (fragmentList.size > 0 && fragmentList.size != 1) {
+        if (fragmentList.size > 1) {
             if (!fragmentList[fragmentList.size - 1].onBackPressed()) {
                 return
             }
-            if (isBacking) {
-                return
+
+            click.run {
+                fragmentList[fragmentList.size - 1].popFragment()
             }
-            fragmentList[fragmentList.size - 1].popFragment()
-            if (!isBacking) {
-                isBacking = true
-                Handler().postDelayed({ isBacking = false }, 500)
-            }
+
             return
         }
 
@@ -84,14 +78,17 @@ abstract class BaseActivity : AppCompatActivity() {
         Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 1500)
     }
 
-    fun getTopFragment(): BaseFragment? {
-        return if (fragmentList.size <= 0) null else fragmentList[fragmentList.size - 1]
+    open fun getTopFragment(): BaseFragment? {
+        return if (fragmentList.size <= 0)
+            null
+        else
+            fragmentList[fragmentList.size - 1]
     }
 
-    fun removeBackAllFragment() {
+    open fun removeBackAllFragment() {
         Handler().postDelayed({
             while (fragmentList.size > 1) {
-                popBackStack(false, fragmentList[0], false)
+                popBackStack(fragmentList[0], isAnim = false, isReturn = false)
                 fragmentList.removeAt(0)
             }
         }, 600)
@@ -101,15 +98,16 @@ abstract class BaseActivity : AppCompatActivity() {
         val currentFragment = fragmentList.size - 1
         while (fragmentList.size > 0) {
             if (currentFragment == fragmentList.size - 1) {
-                popBackStack(false, fragmentList[fragmentList.size - 1], true)
+                popBackStack(fragmentList[fragmentList.size - 1], isAnim = true, isReturn = false)
             } else {
-                popBackStack(false, fragmentList[fragmentList.size - 1], false)
+                popBackStack(fragmentList[fragmentList.size - 1], isAnim = false, isReturn = false)
             }
             fragmentList.removeAt(fragmentList.size - 1)
         }
     }
 
-    fun onReturn() {
+    //top fragment가 pop될 때 2번째 top fragment에서 onResume과 같은 역할을 하기 위함
+    open fun onReturn() {
         hideKeyboard()
         if (statusBarHexColor != 0) {
             setStatusBarHexColor(statusBarHexColor)
@@ -117,18 +115,18 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun setStatusBarHexColor(hex: Int) {
+    open fun setStatusBarHexColor(hex: Int) {
         statusBarHexColor = hex
         statusBarAnimation(hex)
     }
 
-    fun setStatusBarColor(colorID: Int) {
+    open fun setStatusBarColor(colorID: Int) {
         if (colorID == 0) return
         statusBarHexColor = ContextCompat.getColor(application, colorID)
         statusBarAnimation(statusBarHexColor)
     }
 
-    fun popBackStack(isReturn: Boolean, fragment: BaseFragment, isAnim: Boolean) {
+    open fun popBackStack(fragment: BaseFragment, isAnim: Boolean, isReturn: Boolean = true) {
         if (isReturn) {
             if (fragmentList.size > 1) {
                 fragmentList[fragmentList.size - 2].onReturn()
@@ -136,8 +134,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 onReturn()
             }
         }
-        val manager = supportFragmentManager
-        val transaction = manager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         if (isAnim) {
             transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
         }
@@ -145,17 +142,10 @@ abstract class BaseActivity : AppCompatActivity() {
         transaction.commitAllowingStateLoss()
         if (isAnim) {
             if (fragmentList.size > 1) {
-                val xmlAnimation = AnimationUtils.loadAnimation(
-                    baseContext,
-                    R.anim.fade_in
-                )
+                val xmlAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
                 fragmentList[fragmentList.size - 2].getMotherView()?.startAnimation(xmlAnimation)
             }
         }
-    }
-
-    fun popBackStack(fragment: BaseFragment, isAnim: Boolean) {
-        popBackStack(true, fragment, isAnim)
     }
 
     fun popBackStackClose(fragment: BaseFragment, isAnim: Boolean) {
@@ -164,8 +154,7 @@ abstract class BaseActivity : AppCompatActivity() {
         } else {
             onReturn()
         }
-        val manager = supportFragmentManager
-        val transaction = manager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         if (isAnim) transaction.setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out)
         transaction.remove(fragment)
         transaction.commitAllowingStateLoss()
@@ -177,8 +166,7 @@ abstract class BaseActivity : AppCompatActivity() {
         } else {
             onReturn()
         }
-        val manager = supportFragmentManager
-        val transaction = manager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         if (isAnim) transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
         transaction.remove(fragment)
         transaction.commitAllowingStateLoss()
@@ -189,8 +177,7 @@ abstract class BaseActivity : AppCompatActivity() {
         if (null != findViewById(R.id.fragment_container)) {
             findViewById<View>(R.id.fragment_container).bringToFront()
         }
-        val transaction =
-            supportFragmentManager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         //transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
         transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
         transaction.add(R.id.fragment_container, fragment, fragment.javaClass.name)
@@ -219,10 +206,6 @@ abstract class BaseActivity : AppCompatActivity() {
     fun hideKeyboard() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-    }
-
-    open fun apiStores(): ApiStores? {
-        return ApiClient().retrofit()?.create(ApiStores::class.java)
     }
 
     override fun onDestroy() {

@@ -1,6 +1,7 @@
 package com.hdh.kakao_pay_task.ui.base.mvp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.hdh.kakao_pay_task.ui.base.BaseFragment
 import com.hdh.kakao_pay_task.ui.base.BasePresenter

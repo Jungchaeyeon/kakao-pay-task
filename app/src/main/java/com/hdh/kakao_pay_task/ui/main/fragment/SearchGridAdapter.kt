@@ -10,7 +10,9 @@ import com.hdh.kakao_pay_task.utils.Delegate
 import com.hdh.kakao_pay_task.utils.ImageUtil
 import kotlinx.android.synthetic.main.item_search_grid.view.*
 
-class SearchGridAdapter(private val callback : Delegate.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchGridAdapter.SearchListHolder>() {
+class SearchGridAdapter(
+    private val callback : Delegate.Callback<GallerySearchList.Item>
+) : RecyclerView.Adapter<SearchGridAdapter.SearchListHolder>() {
 
     private var prevSize = 0
 

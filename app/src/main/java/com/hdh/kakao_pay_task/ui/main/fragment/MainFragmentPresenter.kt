@@ -24,7 +24,7 @@ class MainFragmentPresenter() : BasePresenter<MainFragmentView>() {
         }
 
         addSubscription(apiStores?.tourRequest(keyword = currentKeyword),
-            object : ApiCallback<GallerySearchList>(mView?.mActivity, true) {
+            object : ApiCallback<GallerySearchList>() {
                 override fun onSuccess(model: GallerySearchList) {
                     gallerySearchList = model.response.body.items.itemList
                     mView?.setList(gallerySearchList)

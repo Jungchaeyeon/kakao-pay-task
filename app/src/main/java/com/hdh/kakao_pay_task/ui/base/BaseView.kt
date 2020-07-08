@@ -15,8 +15,6 @@ interface BaseView {
         fun setStatusBarResID(id: Int)
 
         fun onReturn()
-        fun showLoading()
-        fun hideLoading()
         fun showToast(message: String?)
 
         fun hideKeyboard()

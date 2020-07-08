@@ -18,7 +18,7 @@ class ClickUtil(lifecycle: Lifecycle, private val delay: Long = 500L) : Lifecycl
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private fun create() {
         compositeDisposable = CompositeDisposable()
-        clickSubject = BehaviorSubject.create<(() -> Unit)>()
+        clickSubject = BehaviorSubject.create()
         compositeDisposable.add(
             clickSubject.throttleFirst(delay, TimeUnit.MILLISECONDS)
                 .subscribe {

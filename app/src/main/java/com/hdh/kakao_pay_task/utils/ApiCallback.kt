@@ -6,26 +6,11 @@ import com.hdh.kakao_pay_task.ui.base.BaseActivity
 import io.reactivex.observers.DisposableObserver
 import retrofit2.HttpException
 
-abstract class ApiCallback<M>() :
+abstract class ApiCallback<M> :
     DisposableObserver<M>() {
-
-    private var activity: BaseActivity? = null
-    private var isShowLoading: Boolean = false
-
-    constructor(activity: BaseActivity?, isShowLoading: Boolean) : this() {
-        this.activity = activity
-        this.isShowLoading = isShowLoading
-    }
 
     abstract fun onSuccess(model: M)
     abstract fun onFailure(msg: String?)
-
-    override fun onStart() {
-        super.onStart()
-        if (isShowLoading) {
-            activity?.loadingState?.onNext(true)
-        }
-    }
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
@@ -53,7 +38,5 @@ abstract class ApiCallback<M>() :
         onSuccess(model)
     }
 
-    override fun onComplete() {
-        activity?.loadingState?.onNext(false)
-    }
+    override fun onComplete() {}
 }

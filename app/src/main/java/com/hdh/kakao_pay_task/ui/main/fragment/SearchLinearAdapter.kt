@@ -11,7 +11,8 @@ import com.hdh.kakao_pay_task.utils.ImageUtil
 import kotlinx.android.synthetic.main.item_search_linear.view.*
 
 class SearchLinearAdapter(
-    private val callback : Delegate.Callback<GallerySearchList.Item>) : RecyclerView.Adapter<SearchLinearAdapter.SearchListHolder>() {
+    private val callback : Delegate.Callback<GallerySearchList.Item>
+) : RecyclerView.Adapter<SearchLinearAdapter.SearchListHolder>() {
 
     private var prevSize = 0
 
@@ -30,10 +31,7 @@ class SearchLinearAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchListHolder =
-        SearchListHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_search_linear, parent, false)
-        )
+        SearchListHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_search_linear, parent, false))
 
     override fun onBindViewHolder(holder: SearchListHolder, position: Int) {
         holder.bind(items[position])
